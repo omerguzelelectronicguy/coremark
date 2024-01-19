@@ -287,16 +287,17 @@ MAIN_RETURN_TYPE main(int argc, char *argv[]) {
 	ee_printf("CoreMark Size    : %lu\n", (long unsigned) results[0].size);
 	ee_printf("Total ticks      : %lu\n", (long unsigned) total_time);
 #if HAS_FLOAT
-	ee_printf("Total time (secs): %f\n",time_in_secs(total_time));
+	ee_printf("Total time (msecs): %ld\n",(long)(1000*time_in_secs(total_time)));
+	ee_printf("Assumed frequency (Hz): %ld\n", get_freq());
 	if (time_in_secs(total_time) > 0)
-		ee_printf("Iterations/Sec   : %f\n",default_num_contexts*results[0].iterations/time_in_secs(total_time));
+		ee_printf("Iterations/msec  : %ld\n",(long)(1000*default_num_contexts*results[0].iterations/time_in_secs(total_time)));
 #else 
 	ee_printf("Total time (secs): %d\n",time_in_secs(total_time));
 	if (time_in_secs(total_time) > 0)
 		ee_printf("Iterations/Sec   : %d\n",default_num_contexts*results[0].iterations/time_in_secs(total_time));
 #endif
 	if (time_in_secs(total_time) < 10) {
-		ee_printf("ERROR! Must execute for at least 10 secs for a valid result!\n");
+		ee_printf("ERROR! Must execute for at least 10 secs for a valid result!%d\n",0);
 		total_errors++;
 	}
 
@@ -321,7 +322,8 @@ MAIN_RETURN_TYPE main(int argc, char *argv[]) {
 	for (i=0 ; i<default_num_contexts; i++) 
 		ee_printf("[%d]crcfinal      : 0x%04x\n",i,results[i].crc);
 	if (total_errors==0) {
-		ee_printf("Correct operation validated. See README.md for run and reporting rules.\n");
+		ee_printf("Correct operation validated. See README.md for run and reporting rules.%d\n",0);
+		return MAIN_RETURN_VAL;	// I directly made an exit.
 #if HAS_FLOAT
 		if (known_id==3) {
 			ee_printf("CoreMark 1.0 : %f / %s %s",default_num_contexts*results[0].iterations/time_in_secs(total_time),COMPILER_VERSION,COMPILER_FLAGS);
